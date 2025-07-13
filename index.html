@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pretty Manor - 光影新生，美学重塑</title>
+    <style>
+        /* --- 全局样式与全新亮色系设计理念 --- */
+        :root {
+            --color-background: #F8F7F5;
+            --color-text: #3D3D3D;
+            --color-primary: #C0A47C;
+            --color-primary-dark: #a98f71;
+            --color-secondary: #A9A9A9;
+            --color-white: #FFFFFF;
+            --color-dark-bg: #2C2C2C;
+            --color-light-gray: #EAE8E4;
+            --transition-fast: 0.3s ease;
+            --transition-smooth: 0.5s ease;
+            --nav-height: 82px; /* 定义一个导航栏高度变量 */
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-serif: 'Times New Roman', Times, serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        body.modal-open, body.nav-open { overflow: hidden; }
+
+        /* --- 导航栏 --- */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: var(--nav-height);
+            padding: 0 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000;
+            transition: background-color var(--transition-smooth), height var(--transition-smooth), box-shadow var(--transition-smooth);
+        }
+        .navbar.scrolled {
+            background-color: rgba(248, 247, 245, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            height: 70px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .navbar-logo {
+            display: flex; align-items: center; gap: 12px;
+            font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600;
+            color: var(--color-text); text-decoration: none; letter-spacing: 1px; z-index: 1001;
+        }
+        .logo-image { height: 50px; width: auto; transition: height var(--transition-fast); }
+        .navbar.scrolled .logo-image { height: 40px; }
+        
+        .nav-container { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-links { list-style: none; display: flex; gap: 2.5rem; }
+        .nav-links a {
+            color: var(--color-text); text-decoration: none; font-size: 1rem;
+            position: relative; padding-bottom: 5px; transition: color var(--transition-fast);
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--color-primary); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 1.5px; background-color: var(--color-primary);
+            transition: width var(--transition-fast);
+        }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+        /* --- 语言切换按钮样式 --- */
+        .language-switcher {
+            background: transparent; border: 1px solid var(--color-secondary); color: var(--color-secondary);
+            padding: 0.4rem 0.8rem; border-radius: 20px; cursor: pointer;
+            font-size: 0.8rem; font-weight: 500; transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+        .language-switcher:hover {
+            background-color: var(--color-primary); border-color: var(--color-primary);
+            color: var(--color-white);
+        }
+        .language-switcher.mobile { display: none; }
+
+        /* --- 汉堡菜单 --- */
+        .hamburger-menu {
+            display: none; flex-direction: column; justify-content: space-around;
+            width: 30px; height: 25px; background: transparent; border: none;
+            cursor: pointer; padding: 0; z-index: 1001;
+        }
+        .hamburger-menu .bar {
+            width: 30px; height: 2px; background-color: var(--color-text);
+            border-radius: 10px; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .hamburger-menu.active .bar:nth-child(1) { transform: rotate(45deg) translate(6px, 7px); }
+        .hamburger-menu.active .bar:nth-child(2) { opacity: 0; }
+        .hamburger-menu.active .bar:nth-child(3) { transform: rotate(-45deg) translate(6px, -7px); }
+
+        /* --- 英雄区及其他部分样式 (与您提供的版本相同，为简洁省略) --- */
+        .hero, .content-section, .section-title, .section-subtitle, .pillars-container, .pillar-item, .video-sanctuary, .video-container, .video-slider, .video-slide, .video-overlay, .video-navigation, .video-nav-btn, .video-indicators, .indicator, .services-grid, .service-card, .artisans-container, .artisan-card, #technology, #testimonials, #faq, .cta-section, .footer, .modal-overlay, #scroll-to-top {
+            /* All other styles are identical to your provided code */
+        }
+        .hero { height: 100vh; position: relative; display: flex; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, var(--color-background) 0%, var(--color-white) 100%); overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 20% 50%, rgba(192, 164, 124, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(192, 164, 124, 0.05) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(169, 169, 169, 0.05) 0%, transparent 50%); z-index: 1; }
+        .hero-content { opacity: 0; transform: translateY(30px); animation: fadeInUp 1.5s 0.3s forwards; padding: 0 2rem; position: relative; z-index: 2; max-width: 800px; }
+        .hero h1 { font-family: var(--font-serif); font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 300; margin-bottom: 1.5rem; letter-spacing: 2px; color: var(--color-text); line-height: 1.2; }
+        .hero p { font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-weight: 300; letter-spacing: 1px; color: var(--color-secondary); margin-bottom: 2.5rem; line-height: 1.6; }
+        .hero-cta { opacity: 0; animation: fadeInUp 1.5s 0.8s forwards; margin-top: 2rem; }
+        .hero-button { display: inline-block; padding: 1rem 2.5rem; background-color: var(--color-primary); color: var(--color-white); text-decoration: none; font-size: 1rem; font-weight: 500; border-radius: 30px; transition: all var(--transition-fast); box-shadow: 0 4px 15px rgba(192, 164, 124, 0.3); letter-spacing: 0.5px; }
+        .hero-button:hover { background-color: var(--color-primary-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192, 164, 124, 0.4); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .scroll-down-indicator { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); color: var(--color-secondary); font-size: 2.5rem; animation: bounce 2s infinite; z-index: 2; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); } 40% { transform: translate(-50%, -20px); } 60% { transform: translate(-50%, -10px); } }
+        .content-section { padding: clamp(4rem, 10vw, 7.5rem) 7%; opacity: 0; transform: translateY(50px); transition: opacity 1s ease-out, transform 1s ease-out; }
+        .content-section.visible { opacity: 1; transform: translateY(0); }
+        .section-title { font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3rem); font-weight: 400; text-align: center; margin-bottom: 1.25rem; }
+        .section-subtitle { text-align: center; font-size: clamp(1rem, 2vw, 1.1rem); color: var(--color-secondary); margin-bottom: clamp(3rem, 8vw, 5rem); font-weight: 300; letter-spacing: 1px; max-width: 700px; margin-left: auto; margin-right: auto; padding: 0 1rem; }
+        .pillars-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; text-align: center; }
+        .pillar-item { padding: 2rem; border-radius: 10px; transition: transform var(--transition-fast), box-shadow var(--transition-fast); }
+        .pillar-item:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+        .pillar-icon { color: var(--color-primary); margin-bottom: 1.25rem; display: inline-block; }
+        .pillar-icon svg { width: 48px; height: 48px; }
+        .pillar-item h3 { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 1rem; }
+        .pillar-item p { color: var(--color-secondary); line-height: 1.7; }
+        #sanctuary { background-color: var(--color-white); }
+        .video-sanctuary { display: flex; justify-content: center; align-items: center; padding: 2rem 0; }
+        .video-container { position: relative; width: 100%; max-width: 900px; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); background: linear-gradient(45deg, var(--color-background), var(--color-white)); }
+        .video-slider { position: relative; width: 100%; height: 500px; overflow: hidden; }
+        .video-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .video-slide.active { opacity: 1; }
+        .video-slide video { width: 100%; height: 100%; object-fit: cover; }
+        .video-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)); color: white; padding: 2.5rem 2rem 2rem; transform: translateY(100%); transition: transform 0.4s ease; }
+        .video-slide.active .video-overlay { transform: translateY(0); }
+        .video-overlay h3 { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--color-primary); }
+        .video-overlay p { font-size: 1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); }
+        .video-navigation { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 1rem; transform: translateY(-50%); pointer-events: none; }
+        .video-nav-btn { background: rgba(255, 255, 255, 0.9); border: none; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; pointer-events: all; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+        .video-nav-btn svg { width: 24px; height: 24px; color: var(--color-primary); transition: color 0.3s ease; }
+        .video-nav-btn:hover { background: var(--color-primary); transform: scale(1.1); }
+        .video-nav-btn:hover svg { color: white; }
+        .video-indicators { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+        .indicator { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); cursor: pointer; transition: all 0.3s ease; }
+        .indicator.active { background: var(--color-primary); transform: scale(1.2); }
+        .indicator:hover { background: rgba(255, 255, 255, 0.8); }
+        #services { background-color: var(--color-background); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; }
+        .service-card { text-align: center; background: var(--color-white); border-radius: 8px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.07); transition: transform var(--transition-fast), box-shadow var(--transition-fast); }
+        .service-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .service-card-image { height: 250px; overflow: hidden; }
+        .service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-smooth); }
+        .service-card:hover img { transform: scale(1.08); }
+        .service-card-content { padding: 1.5rem; }
+        .service-card h3 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 0.6rem; }
+        .service-card p { color: var(--color-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem; }
+        .service-features { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 1rem; }
+        .feature-tag { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color: var(--color-white); font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.8rem; border-radius: 20px; letter-spacing: 0.5px; }
+        .feature-tag:hover { transform: scale(1.05); transition: transform 0.2s ease; }
+        #artisans { background-color: var(--color-white); }
+        .artisans-container { display: flex; justify-content: center; gap: 2rem; perspective: 1500px; flex-wrap: wrap; }
+        .artisan-card { width: 240px; height: 340px; position: relative; cursor: pointer; transition: transform 0.8s; transform-style: preserve-3d; }
+        .artisan-card-front, .artisan-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .artisan-card-front { background-color: var(--color-background); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; }
+        .artisan-card-front img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--color-white); margin-bottom: 1.25rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .artisan-name { font-family: var(--font-serif); font-size: 1.5rem; }
+        .artisan-title { font-size: 0.9rem; color: var(--color-secondary); margin-top: 0.3rem; }
+        .artisan-card-back { background-color: #3D3D3D; color: var(--color-white); transform: rotateY(180deg); padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; }
+        .artisan-card-back h4 { font-family: var(--font-serif); font-size: 1.2rem; color: var(--color-primary); margin-bottom: 1rem; border-bottom: 1px solid var(--color-primary); padding-bottom: 0.6rem; }
+        .artisan-card-back p { font-size: 0.9rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
+        .artisan-card.is-flipped { transform: rotateY(180deg); }
+        #technology { background-color: var(--color-dark-bg); color: var(--color-white); position: relative; overflow: hidden; }
+        #technology::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, rgba(192, 164, 124, 0.1) 0%, transparent 50%); opacity: 0.5; }
+        #technology .section-title, #technology .section-subtitle { color: var(--color-white); position: relative; }
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; text-align: center; position: relative; }
+        .tech-item h3 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1rem; color: var(--color-primary); }
+        .tech-item p { color: rgba(255, 255, 255, 0.7); line-height: 1.6; }
+        #testimonials { background-color: var(--color-background); }
+        .testimonial-slider { position: relative; max-width: 800px; margin: 0 auto; overflow: hidden; }
+        .testimonial-slides { display: flex; transition: transform var(--transition-smooth); }
+        .testimonial-slide { flex: 0 0 100%; text-align: center; padding: 1.25rem; }
+        .testimonial-slide blockquote { font-family: var(--font-serif); font-size: clamp(1.2rem, 3vw, 1.8rem); font-style: italic; line-height: 1.5; margin-bottom: 1.25rem; }
+        .testimonial-author { font-weight: bold; color: var(--color-primary); }
+        .slider-nav { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; transform: translateY(-50%); z-index: 10; }
+        .slider-btn { background: rgba(255,255,255,0.5); border: none; font-size: 1.5rem; color: var(--color-text); cursor: pointer; transition: all var(--transition-fast); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .slider-btn:hover { background-color: var(--color-primary); color: var(--color-white); }
+        #prev-slide { margin-left: -50px; }
+        #next-slide { margin-right: -50px; }
+        #faq { background-color: var(--color-white); }
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid var(--color-light-gray); }
+        .faq-question { width: 100%; background: none; border: none; text-align: left; padding: 1.5rem 0.6rem; font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color var(--transition-fast); }
+        .faq-question:hover { color: var(--color-primary); }
+        .faq-question::after { content: '+'; font-size: 2rem; color: var(--color-primary); transition: transform var(--transition-fast); }
+        .faq-question.active::after { transform: rotate(45deg); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height var(--transition-smooth), padding var(--transition-smooth); }
+        .faq-answer-content { padding: 0 0.6rem 1.5rem; line-height: 1.7; color: #555; }
+        .cta-section { text-align: center; }
+        .cta-button { display: inline-block; padding: 1.1rem 3.1rem; background-color: var(--color-primary); color: var(--color-white); text-decoration: none; font-size: 1.1rem; font-weight: bold; border-radius: 50px; transition: all var(--transition-fast); border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(192, 164, 124, 0.4); }
+        .cta-button:hover { background-color: var(--color-primary-dark); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(192, 164, 124, 0.5); }
+        .footer { background-color: var(--color-dark-bg); color: var(--color-secondary); padding: 4rem 5%; text-align: center; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 3rem auto; text-align: left; }
+        .footer-col h4 { font-family: var(--font-serif); color: var(--color-white); font-size: 1.2rem; margin-bottom: 1rem; }
+        .footer-col p, .footer-col a { color: var(--color-secondary); text-decoration: none; display: block; margin-bottom: 0.5rem; transition: color var(--transition-fast); }
+        .footer-col a:hover { color: var(--color-primary); }
+        .footer-socials { margin-top: 1rem; }
+        .footer-socials a { display: inline-block; margin-right: 1rem; }
+        .footer-socials svg { width: 24px; height: 24px; fill: var(--color-secondary); transition: fill var(--transition-fast); }
+        .footer-socials a:hover svg { fill: var(--color-primary); }
+        .footer-bottom { border-top: 1px solid #444; padding-top: 2rem; text-align: center; font-size: 0.9rem; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity var(--transition-fast), visibility var(--transition-fast); }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { position: relative; padding: 2.5rem; background-color: var(--color-background); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); width: 90%; max-width: 400px; text-align: center; transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-close { position: absolute; top: 15px; right: 15px; font-size: 2rem; color: var(--color-secondary); cursor: pointer; border: none; background: none; line-height: 1; }
+        .modal-content h3 { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .qr-code { width: 180px; height: 180px; margin: 0 auto 1.25rem; background-color: var(--color-white); padding: 10px; border-radius: 10px; }
+        .qr-code img { width: 100%; height: 100%; display: block; }
+        .social-link { display: inline-block; width: 100%; padding: 1rem; margin-top: 0.6rem; background-color: #1877F2; color: var(--color-white); text-decoration: none; border-radius: 10px; font-weight: bold; transition: background-color var(--transition-fast); }
+        .social-link:hover { background-color: #166fe5; }
+        #scroll-to-top { position: fixed; bottom: 2rem; right: 2rem; width: 50px; height: 50px; background-color: var(--color-primary); color: var(--color-white); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity var(--transition-fast), visibility var(--transition-fast), transform var(--transition-fast); z-index: 999; }
+        #scroll-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        #scroll-to-top:hover { background-color: var(--color-primary-dark); }
+
+        /* --- 响应式 --- */
+        @media (max-width: 992px) { /* 调整断点以更好地适应导航 */
+            .hamburger-menu { display: flex; }
+            .nav-container {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+                background-color: rgba(248, 247, 245, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column; justify-content: center; align-items: center;
+                gap: 0; /* 在移动端菜单中移除容器的gap */
+                transform: translateX(100%);
+                transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+                padding: var(--nav-height) 0;
+            }
+            .nav-container.active { transform: translateX(0); }
+            .nav-links { flex-direction: column; gap: 2rem; width: 100%; text-align: center; }
+            .nav-links a { font-size: 1.5rem; }
+            .language-switcher.desktop { display: none; }
+            .language-switcher.mobile { display: block; margin-top: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .content-section { padding: 3rem 5%; }
+            .slider-nav { display: none; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .footer-col { align-items: center; display: flex; flex-direction: column; }
+            .video-slider { height: 350px; }
+            .video-overlay { padding: 1.5rem 1rem 1rem; }
+            .video-overlay h3 { font-size: 1.4rem; }
+            .video-overlay p { font-size: 0.9rem; }
+            .video-nav-btn { width: 40px; height: 40px; }
+            .video-nav-btn svg { width: 20px; height: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="navbar-logo">
+            <img class="logo-image" src="Image_20250426_222104_746-Photoroom.png" alt="Pretty Manor Logo">
+            <span data-lang-zh="美丽妆园" data-lang-en="The Pretty Manor">The Pretty Manor</span>
+        </a>
+        <div class="nav-container" id="nav-container">
+            <ul class="nav-links">
+                <li><a href="#pillars" data-section="pillars" data-lang-zh="品牌基石" data-lang-en="Our Pillars">品牌基石</a></li>
+                <li><a href="#services" data-section="services" data-lang-zh="核心项目" data-lang-en="Core Services">核心项目</a></li>
+                <li><a href="#artisans" data-section="artisans" data-lang-zh="匠人团队" data-lang-en="Our Artisans">匠人团队</a></li>
+                <li><a href="#faq" data-section="faq" data-lang-zh="常见问答" data-lang-en="FAQ">常见问答</a></li>
+                <li><a href="#contact" data-section="contact" data-lang-zh="预约咨询" data-lang-en="Contact Us">预约咨询</a></li>
+            </ul>
+            <button class="language-switcher mobile" id="lang-toggle-btn-mobile">EN / 中</button>
+        </div>
+        <button class="language-switcher desktop" id="lang-toggle-btn-desktop">EN / 中</button>
+        <button class="hamburger-menu" aria-label="Toggle Menu">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+    </nav>
+
+    <!-- HTML内容与上一版相同，所有data-lang-*属性都已添加 -->
+    <header class="hero" id="hero">
+        <div class="hero-content">
+            <h1 data-lang-zh="光影新生 美学重塑" data-lang-en="A New Dawn of Light & Shadow, An Aesthetic Rebirth">光影新生 美学重塑</h1>
+            <p data-lang-zh="在 Pretty Manor，遇见更美的自己" data-lang-en="At Pretty Manor, meet a more beautiful you">在 Pretty Manor，遇见更美的自己</p>
+            <div class="hero-cta">
+                <a href="#contact" class="hero-button" data-lang-zh="开启美丽旅程" data-lang-en="Begin Your Beauty Journey">开启美丽旅程</a>
+            </div>
+        </div>
+        <div class="scroll-down-indicator">&#8595;</div>
+    </header>
+
+    <main>
+        <section id="pillars" class="content-section">
+            <h2 class="section-title" data-lang-zh="品牌基石" data-lang-en="Our Pillars">品牌基石</h2>
+            <p class="section-subtitle" data-lang-zh="我们的三大承诺，是您美丽与安心的坚实保障" data-lang-en="Our three commitments are the solid guarantee of your beauty and peace of mind">我们的三大承诺，是您美丽与安心的坚实保障</p>
+            <div class="pillars-container">
+                <div class="pillar-item">
+                    <div class="pillar-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm3.36 6.28L12 11.1l-3.36-2.82-1.41 1.41L12 13.93l4.77-4.24-1.41-1.41zM12 20c-2.21 0-4-1.79-4-4h8c0 2.21-1.79 4-4 4z"/></svg></div>
+                    <h3 data-lang-zh="艺术 · Artistry" data-lang-en="Artistry">艺术 · Artistry</h3>
+                    <p data-lang-zh="我们视每一位客户为独一无二的艺术品，以大师级的审美和匠心，雕琢和谐、自然且富有个性的美。" data-lang-en="We see each client as a unique work of art, sculpting beauty that is harmonious, natural, and full of personality with master-level aesthetics and craftsmanship.">我们视每一位客户为独一无二的艺术品，以大师级的审美和匠心，雕琢和谐、自然且富有个性的美。</p>
+                </div>
+                <div class="pillar-item">
+                    <div class="pillar-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></div>
+                    <h3 data-lang-zh="安全 · Safety" data-lang-en="Safety">安全 · Safety</h3>
+                    <p data-lang-zh="安全是美的绝对前提。我们采用全球顶尖的医疗设备与材料，遵循最严苛的操作规范，确保万无一失。" data-lang-en="Safety is the absolute prerequisite for beauty. We use world-class medical equipment and materials, adhering to the strictest operational standards to ensure complete safety.">安全是美的绝对前提。我们采用全球顶尖的医疗设备与材料，遵循最严苛的操作规范，确保万无一失。</p>
+                </div>
+                <div class="pillar-item">
+                    <div class="pillar-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.64-.11 2.4-.31.3-.08.6-.17.88-.28-1.43-1.05-2.28-2.65-2.28-4.41 0-3.31 2.69-6 6-6 .34 0 .67.03.99.08.06.01.11.02.17.03C20.36 5.64 21 4.83 21 4c0-.34-.04-.68-.1-1 .03-.01.07-.02.1-.03C20.04 2.36 19.17 2 18 2c-1.66 0-3 1.34-3 3 0 .93.42 1.75 1.08 2.28-.5.05-1 .08-1.58.08-2.76 0-5 2.24-5 5s2.24 5 5 5c.17 0 .33-.01.5-.02-.17.33-.32.67-.45 1.02-.68.18-1.38.29-2.05.29-3.86 0-7-3.14-7-7s3.14-7 7-7z"/></svg></div>
+                    <h3 data-lang-zh="创新 · Innovation" data-lang-en="Innovation">创新 · Innovation</h3>
+                    <p data-lang-zh="我们不断探索前沿科技，将最新的生物技术与美学理念相融合，提供更高效、更微创、更持久的解决方案。" data-lang-en="We constantly explore cutting-edge technology, integrating the latest biotech with aesthetic concepts to provide more efficient, minimally invasive, and lasting solutions.">我们不断探索前沿科技，将最新的生物技术与美学理念相融合，提供更高效、更微创、更持久的解决方案。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sanctuary" class="content-section">
+            <h2 class="section-title" data-lang-zh="Pretty Manor圣殿" data-lang-en="The Sanctuary of Pretty Manor">Pretty Manor圣殿</h2>
+            <p class="section-subtitle" data-lang-zh="柬埔寨美丽妆园国际美业，由贾婷婷女士创建于2016年，坐落于美丽的柬埔寨首都金边，是柬埔寨王国较早一批经营美业的机构，创建之初经营范围从进口化妆品批发、零售到皮肤、身材管理，经历了3年沉淀后开拓医疗整形，用独特的产业化的美业经营策略，造就了一站式体验感，各部门的独立运营，相互配合，让顾客的体验度升华，成立至今，获得好评无数，美丽妆园国际整形医院，拥有国际顶尖的技术支持，国内整形医院高等级医护团队轮换进驻，并有韩医重磅加入，旨在改变，从这里开始！" data-lang-en="Pretty Manor International Aesthetics, founded by Ms. Jia Tingting in 2016, is located in the beautiful capital of Cambodia, Phnom Penh. It is one of the earliest aesthetic institutions in the Kingdom of Cambodia. Initially, its business scope ranged from wholesale and retail of imported cosmetics to skin and body management. After three years of development, it expanded into medical plastic surgery. With a unique industrialized business strategy, it has created a one-stop experience. The independent operation and mutual cooperation of various departments enhance the customer experience. Since its establishment, it has received countless positive reviews. Pretty Manor International Plastic Surgery Hospital has top international technical support, with high-level medical teams from domestic plastic surgery hospitals rotating in, and the significant addition of Korean doctors. The aim is: change starts here!">柬埔寨美丽妆园国际美业...</p>
+            <div class="video-sanctuary">
+                <div class="video-container">
+                    <div class="video-slider">
+                        <div class="video-slide active"><video muted loop playsInline preload="metadata"><source src="IMG_7081 (1).mp4" type="video/mp4"></video><div class="video-overlay"><h3 data-lang-zh="豪华接待区" data-lang-en="Luxury Reception Area">豪华接待区</h3><p data-lang-zh="温馨优雅的接待环境，让您感受宾至如归的尊贵体验" data-lang-en="A warm and elegant reception environment for a distinguished, welcoming experience.">温馨优雅的接待环境...</p></div></div>
+                        <div class="video-slide"><video muted loop playsInline preload="metadata"><source src="IMG_7080.mp4" type="video/mp4"></video><div class="video-overlay"><h3 data-lang-zh="私密咨询室" data-lang-en="Private Consultation Room">私密咨询室</h3><p data-lang-zh="一对一私密咨询空间，专业医生为您制定个性化方案" data-lang-en="A one-on-one private space where our expert doctors create your personalized plan.">一对一私密咨询空间...</p></div></div>
+                        <div class="video-slide"><video muted loop playsInline preload="metadata"><source src="IMG_7082.mp4" type="video/mp4"></video><div class="video-overlay"><h3 data-lang-zh="舒适休息区" data-lang-en="Comfortable Lounge">舒适休息区</h3><p data-lang-zh="舒适宁静的休息环境，让您在美丽蜕变中享受放松时光" data-lang-en="A comfortable and tranquil lounge area for you to relax during your beauty transformation.">舒适宁静的休息环境...</p></div></div>
+                        <div class="video-slide"><video muted loop playsInline preload="metadata"><source src="202506191334.mp4" type="video/mp4"></video><div class="video-overlay"><h3 data-lang-zh="高端手术室" data-lang-en="Advanced Operating Room">高端手术室</h3><p data-lang-zh="国际标准的无菌手术室，确保您的安全与手术效果" data-lang-en="An international-standard sterile operating room to ensure your safety and surgical results.">国际标准的无菌手术室...</p></div></div>
+                    </div>
+                    <div class="video-navigation"><button class="video-nav-btn prev-btn" id="video-prev-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button><button class="video-nav-btn next-btn" id="video-next-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button></div>
+                    <div class="video-indicators"><span class="indicator active" data-video="0"></span><span class="indicator" data-video="1"></span><span class="indicator" data-video="2"></span><span class="indicator" data-video="3"></span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="content-section">
+            <h2 class="section-title" data-lang-zh="核心项目" data-lang-en="Core Services">核心项目</h2>
+            <p class="section-subtitle" data-lang-zh="我们专注于最擅长的领域，将每一项服务打磨成艺术品" data-lang-en="We focus on what we do best, polishing every service into a work of art">我们专注于最擅长的领域，将每一项服务打磨成艺术品</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-card-image"><img src="shutterstock_664629823-scaled.webp" alt="面部精雕"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="面部精雕" data-lang-en="Facial Sculpting">面部精雕</h3>
+                        <p data-lang-zh="重塑面部黄金比例，打造自然和谐的轮廓线条。采用3D建模技术，精准定位最佳比例点，让您的面部线条更加立体自然。" data-lang-en="Reshape the facial golden ratio to create harmonious and natural contour lines. Using 3D modeling technology to precisely locate the optimal points for a more three-dimensional and natural look.">重塑面部黄金比例...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="3D预览" data-lang-en="3D Preview">3D预览</span>
+                            <span class="feature-tag" data-lang-zh="无痕技术" data-lang-en="Scarless Technique">无痕技术</span>
+                            <span class="feature-tag" data-lang-zh="黄金比例" data-lang-en="Golden Ratio">黄金比例</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="content_cc1de6ed-09a5-4477-aa4f-9bb4a0d7556e.avif" alt="灵动眼艺"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="灵动眼艺" data-lang-en="Dynamic Eye Artistry">灵动眼艺</h3>
+                        <p data-lang-zh="赋予眼神光彩与情感，让双眸成为心灵的窗口。专业眼部整形，包括双眼皮、开眼角、祛眼袋等多项技术。" data-lang-en="Give your eyes radiance and emotion, making them the windows to your soul. Professional eye surgery, including double eyelids, epicanthoplasty, and eye bag removal.">赋予眼神光彩与情感...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="微创手术" data-lang-en="Minimally Invasive">微创手术</span>
+                            <span class="feature-tag" data-lang-zh="快速恢复" data-lang-en="Quick Recovery">快速恢复</span>
+                            <span class="feature-tag" data-lang-zh="个性定制" data-lang-en="Customized">个性定制</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="beautiful-asian-woman-feels-happy-with-beautiful-healthy-skin_296537-1943.avif" alt="肌肤焕新"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="肌肤焕新" data-lang-en="Skin Rejuvenation">肌肤焕新</h3>
+                        <p data-lang-zh="从根源改善肤质，逆转时光，唤醒肌肤活力。运用激光嫩肤、水光注射、热玛吉等先进技术，全面改善肌肤状态。" data-lang-en="Improve skin texture from the source, reverse time, and awaken skin vitality. Using advanced technologies like laser rejuvenation, hydro-lifting, and Thermage to comprehensively improve skin condition.">从根源改善肤质...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="激光嫩肤" data-lang-en="Laser Skin">激光嫩肤</span>
+                            <span class="feature-tag" data-lang-zh="水光注射" data-lang-en="Hydro-Lifting">水光注射</span>
+                            <span class="feature-tag" data-lang-zh="抗衰老" data-lang-en="Anti-Aging">抗衰老</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="619f8386639b0.webp" alt="鼻部重塑"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="鼻部重塑" data-lang-en="Nose Reshaping">鼻部重塑</h3>
+                        <p data-lang-zh="兼顾形态与功能，打造与面部完美契合的艺术品。采用结构性隆鼻技术，确保自然挺拔的同时保持呼吸功能。" data-lang-en="Balancing form and function to create an artistic piece that perfectly matches the face. Using structural rhinoplasty to ensure a natural, defined look while maintaining respiratory function.">兼顾形态与功能...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="结构重建" data-lang-en="Structural">结构重建</span>
+                            <span class="feature-tag" data-lang-zh="功能保护" data-lang-en="Functional">功能保护</span>
+                            <span class="feature-tag" data-lang-zh="自然挺拔" data-lang-en="Natural Look">自然挺拔</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="1-1676823040.avif" alt="形体雕塑"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="形体雕塑" data-lang-en="Body Sculpting">形体雕塑</h3>
+                        <p data-lang-zh="精雕身体曲线，塑造健康、性感、充满力量感的身材。采用高清环吸、自体脂肪移植等技术，打造完美身材比例。" data-lang-en="Sculpt your body curves to create a healthy, sensual, and powerful figure. Using techniques like high-definition liposuction and fat grafting to achieve perfect body proportions.">精雕身体曲线...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="高清环吸" data-lang-en="HD Lipo">高清环吸</span>
+                            <span class="feature-tag" data-lang-zh="脂肪移植" data-lang-en="Fat Grafting">脂肪移植</span>
+                            <span class="feature-tag" data-lang-zh="曲线塑造" data-lang-en="Curve Shaping">曲线塑造</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="ecd257caac7e8c98b14cd2f11754c6b8.webp" alt="毛发重塑"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="毛发重塑" data-lang-en="Hair Restoration">毛发重塑</h3>
+                        <p data-lang-zh="运用前沿生物技术，恢复秀发浓密，重拾年轻自信。采用FUE无痕植发技术，自然密度分布，效果持久。" data-lang-en="Using cutting-edge biotechnology to restore thick hair and regain youthful confidence. Adopting FUE scarless hair transplant technology for natural density and lasting results.">运用前沿生物技术...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="无痕植发" data-lang-en="FUE Scarless">无痕植发</span>
+                            <span class="feature-tag" data-lang-zh="自然密度" data-lang-en="Natural Density">自然密度</span>
+                            <span class="feature-tag" data-lang-zh="持久效果" data-lang-en="Lasting Results">持久效果</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="72754.jpg" alt="唇部艺术"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="唇部艺术" data-lang-en="Lip Artistry">唇部艺术</h3>
+                        <p data-lang-zh="精致唇形设计，展现迷人笑容魅力。通过唇部填充、唇形矫正等技术，打造饱满性感的完美唇形。" data-lang-en="Exquisite lip design to reveal a charming smile. Creating full, sensual, and perfect lips through techniques like fillers and lip shape correction.">精致唇形设计...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="精准填充" data-lang-en="Precise Filling">精准填充</span>
+                            <span class="feature-tag" data-lang-zh="唇形设计" data-lang-en="Lip Design">唇形设计</span>
+                            <span class="feature-tag" data-lang-zh="自然饱满" data-lang-en="Natural Fullness">自然饱满</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-image"><img src="171376751831df10cafcfabb4ef3ebbfd4fa56f055.webp" alt="私密美学"></div>
+                    <div class="service-card-content">
+                        <h3 data-lang-zh="私密美学" data-lang-en="Intimate Aesthetics">私密美学</h3>
+                        <p data-lang-zh="关注女性私密健康与美丽，提供专业的私密整形服务。在绝对私密的环境中，由经验丰富的女医师主刀。" data-lang-en="Focusing on women's intimate health and beauty, providing professional intimate surgery services. Performed by experienced female surgeons in a completely private environment.">关注女性私密健康...</p>
+                        <div class="service-features">
+                            <span class="feature-tag" data-lang-zh="女医师主刀" data-lang-en="Female Surgeon">女医师主刀</span>
+                            <span class="feature-tag" data-lang-zh="绝对私密" data-lang-en="Absolute Privacy">绝对私密</span>
+                            <span class="feature-tag" data-lang-zh="专业安全" data-lang-en="Professional & Safe">专业安全</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="artisans" class="content-section">
+            <h2 class="section-title" data-lang-zh="匠人团队" data-lang-en="Our Artisans">匠人团队</h2>
+            <p class="section-subtitle" data-lang-zh="我们的医生，是经验丰富的专家，更是懂你的美学艺术家" data-lang-en="Our doctors are not just experienced experts, but also aesthetic artists who understand you">我们的医生，是经验丰富的专家，更是懂你的美学艺术家</p>
+            <div class="artisans-container">
+                 <div class="artisan-card"><div class="artisan-card-front"><img src="Image_20250428_185439_238.jpeg" alt="史医生肖像"><h3 class="artisan-name" data-lang-zh="史医生" data-lang-en="Dr. Shi">史医生</h3><p class="artisan-title" data-lang-zh="首席美学设计师" data-lang-en="Chief Aesthetic Designer">首席美学设计师</p></div><div class="artisan-card-back"><h4 data-lang-zh="史医生" data-lang-en="Dr. Shi">史医生</h4><p data-lang-zh="专长：面部轮廓重塑、综合抗衰老。拥有超过15年临床经验，以其极致的艺术审美和精准的手术技巧闻名。" data-lang-en="Specialty: Facial contour reshaping, comprehensive anti-aging. With over 15 years of clinical experience, known for exquisite artistic aesthetics and precise surgical skills.">专长：面部轮廓重塑...</p></div></div>
+                 <div class="artisan-card"><div class="artisan-card-front"><img src="截屏2025-06-23 下午4.24.05.png" alt="慕医生肖像"><h3 class="artisan-name" data-lang-zh="慕医生" data-lang-en="Dr. Mu">慕医生</h3><p class="artisan-title" data-lang-zh="高级美学顾问" data-lang-en="Senior Aesthetic Consultant">高级美学顾问</p></div><div class="artisan-card-back"><h4 data-lang-zh="慕医生" data-lang-en="Dr. Mu">慕医生</h4><p data-lang-zh="专长：个性化美学设计、综合美容咨询。拥有丰富的临床经验，擅长为客户量身定制最适合的美学方案。" data-lang-en="Specialty: Personalized aesthetic design, comprehensive beauty consulting. With extensive clinical experience, excels at creating tailored aesthetic plans for clients.">专长：个性化美学设计...</p></div></div>
+                 <div class="artisan-card"><div class="artisan-card-front"><img src="截屏2025-06-23 下午4.30.13.png" alt="常医生肖像"><h3 class="artisan-name" data-lang-zh="常医生" data-lang-en="Dr. Chang">常医生</h3><p class="artisan-title" data-lang-zh="资深美容专家" data-lang-en="Senior Beauty Expert">资深美容专家</p></div><div class="artisan-card-back"><h4 data-lang-zh="常医生" data-lang-en="Dr. Chang">常医生</h4><p data-lang-zh="专长：微创美容、皮肤管理。拥有丰富的临床实践经验，以精湛的技术和细致的服务为客户提供专业的美容解决方案。" data-lang-en="Specialty: Minimally invasive procedures, skin management. With rich clinical experience, provides professional beauty solutions with superb skills and meticulous service.">专长：微创美容...</p></div></div>
+                 <div class="artisan-card"><div class="artisan-card-front"><img src="截屏2025-06-23 下午4.31.57.png" alt="王医生肖像"><h3 class="artisan-name" data-lang-zh="王医生" data-lang-en="Dr. Wang">王医生</h3><p class="artisan-title" data-lang-zh="整形外科专家" data-lang-en="Plastic Surgery Specialist">整形外科专家</p></div><div class="artisan-card-back"><h4 data-lang-zh="王医生" data-lang-en="Dr. Wang">王医生</h4><p data-lang-zh="专长：精细整形手术、美学重塑。拥有扎实的医学功底和丰富的手术经验，擅长各类整形美容项目，追求自然和谐的美学效果。" data-lang-en="Specialty: Fine plastic surgery, aesthetic reshaping. With a solid medical background and extensive surgical experience, excels in various cosmetic procedures, pursuing natural and harmonious results.">专长：精细整形手术...</p></div></div>
+                 <div class="artisan-card"><div class="artisan-card-front"><img src="截屏2025-06-23 下午4.33.55.png" alt="柳医生肖像"><h3 class="artisan-name" data-lang-zh="柳医生" data-lang-en="Dr. Liu">柳医生</h3><p class="artisan-title" data-lang-zh="高级整形专家" data-lang-en="Senior Plastic Surgeon">高级整形专家</p></div><div class="artisan-card-back"><h4 data-lang-zh="柳医生" data-lang-en="Dr. Liu">柳医生</h4><p data-lang-zh="专长：面部精雕、微创美容。拥有丰富的临床经验和精湛的手术技巧，注重细节与完美，为客户打造自然美丽的效果。" data-lang-en="Specialty: Facial sculpting, minimally invasive procedures. With extensive clinical experience and superb surgical skills, focuses on detail and perfection to create naturally beautiful results.">专长：面部精雕...</p></div></div>
+            </div>
+        </section>
+
+        <section id="technology" class="content-section">
+            <h2 class="section-title" data-lang-zh="科技前沿" data-lang-en="Cutting-Edge Technology">科技前沿</h2>
+            <p class="section-subtitle" data-lang-zh="我们坚信，顶尖科技是实现艺术构想的最强工具" data-lang-en="We believe that top technology is the most powerful tool for realizing artistic visions">我们坚信，顶尖科技是实现艺术构想的最强工具</p>
+            <div class="tech-grid">
+                <div class="tech-item"><h3 data-lang-zh="3D虚拟预演" data-lang-en="3D Virtual Preview">3D虚拟预演</h3><p data-lang-zh="术前精准预见术后效果，确保每一处改变都符合您的期望。" data-lang-en="Accurately preview post-operative results to ensure every change meets your expectations.">术前精准预见术后效果...</p></div>
+                <div class="tech-item"><h3 data-lang-zh="微创能量平台" data-lang-en="Minimally Invasive Energy Platform">微创能量平台</h3><p data-lang-zh="整合顶尖激光与射频设备，以最小创伤实现最大美学提升。" data-lang-en="Integrating top laser and radiofrequency devices to achieve maximum aesthetic improvement with minimal trauma.">整合顶尖激光与射频设备...</p></div>
+                <div class="tech-item"><h3 data-lang-zh="细胞再生技术" data-lang-en="Cellular Regeneration Technology">细胞再生技术</h3><p data-lang-zh="利用自体生长因子，从细胞层面激活年轻潜能，实现自然抗衰。" data-lang-en="Using autologous growth factors to activate youthful potential at the cellular level for natural anti-aging.">利用自体生长因子...</p></div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="content-section">
+            <h2 class="section-title" data-lang-zh="客户心声" data-lang-en="Client Testimonials">客户心声</h2>
+            <p class="section-subtitle" data-lang-zh="每一份信任与赞誉，都是我们前行不息的动力" data-lang-en="Every piece of trust and praise is the driving force for our continuous progress">每一份信任与赞誉，都是我们前行不息的动力</p>
+            <div class="testimonial-slider">
+                <div class="testimonial-slides">
+                    <div class="testimonial-slide"><blockquote data-lang-zh="“在这里，我感受到的不仅是专业，更是一种被尊重的艺术创作过程。效果超乎想象。”" data-lang-en="“Here, I experienced not just professionalism, but a respected artistic creation process. The results are beyond imagination.”">“在这里，我感受到的不仅是专业...”</blockquote><cite class="testimonial-author" data-lang-zh="- C. Liu, 面部精雕" data-lang-en="- C. Liu, Facial Sculpting">- C. Liu, 面部精雕</cite></div>
+                    <div class="testimonial-slide"><blockquote data-lang-zh="“多年的眼部问题终于在这里得到了完美的解决，感谢Dr. Chen的妙手仁心。”" data-lang-en="“My long-standing eye issues were finally resolved perfectly here. Thanks to Dr. Chen's skillful and compassionate hands.”">“多年的眼部问题终于在这里得到了完美的解决...”</blockquote><cite class="testimonial-author" data-lang-zh="- W. Zhang, 眼部修复" data-lang-en="- W. Zhang, Eye Revision">- W. Zhang, 眼部修复</cite></div>
+                    <div class="testimonial-slide"><blockquote data-lang-zh="“皮肤状态前所未有的好，素颜出门也充满自信。这是一次真正由内而外的焕新。”" data-lang-en="“My skin has never been better; I feel confident even without makeup. This was a true rejuvenation from the inside out.”">“皮肤状态前所未有的好...”</blockquote><cite class="testimonial-author" data-lang-zh="- S. Wang, 肌肤焕新" data-lang-en="- S. Wang, Skin Rejuvenation">- S. Wang, 肌肤焕新</cite></div>
+                </div>
+                <div class="slider-nav"><button class="slider-btn" id="prev-slide">&lt;</button><button class="slider-btn" id="next-slide">&gt;</button></div>
+            </div>
+        </section>
+
+        <section id="faq" class="content-section">
+            <h2 class="section-title" data-lang-zh="常见问答" data-lang-en="Frequently Asked Questions">常见问答</h2>
+            <p class="section-subtitle" data-lang-zh="我们整理了您最关心的问题，希望能为您答疑解惑" data-lang-en="We have compiled the questions you care about most, hoping to answer your doubts">我们整理了您最关心的问题，希望能为您答疑解惑</p>
+            <div class="faq-container">
+                <div class="faq-item"><button class="faq-question" data-lang-zh="咨询是免费的吗？" data-lang-en="Is the consultation free?">咨询是免费的吗？</button><div class="faq-answer"><div class="faq-answer-content"><p data-lang-zh="是的，我们提供首次免费的一对一美学顾问咨询。在这次咨询中，我们将深入了解您的需求，并提供初步的专业建议和方案方向。" data-lang-en="Yes, we offer a complimentary first-time one-on-one consultation with our aesthetic consultant. During this session, we will gain a deep understanding of your needs and provide initial professional advice and potential treatment plans.">是的，我们提供首次免费的一对一美学顾问咨询...</p></div></div></div>
+                <div class="faq-item"><button class="faq-question" data-lang-zh="手术的恢复期通常需要多久？" data-lang-en="How long is the recovery period for surgery?">手术的恢复期通常需要多久？</button><div class="faq-answer"><div class="faq-answer-content"><p data-lang-zh="恢复期因项目和个人体质而异。我们致力于采用微创技术，以最大限度地缩短您的恢复时间。在咨询时，您的主治医生会为您提供详尽的、个性化的恢复计划和时间表。" data-lang-en="The recovery period varies depending on the procedure and individual physical condition. We are committed to using minimally invasive techniques to shorten your recovery time as much as possible. During your consultation, your doctor will provide a detailed, personalized recovery plan and timeline.">恢复期因项目和个人体质而异...</p></div></div></div>
+                <div class="faq-item"><button class="faq-question" data-lang-zh="如何保障手术的隐私和安全？" data-lang-en="How is the privacy and safety of the surgery ensured?">如何保障手术的隐私和安全？</button><div class="faq-answer"><div class="faq-answer-content"><p data-lang-zh="我们实行严格的客户信息保密制度和预约分流管理，确保您在院期间的绝对私密性。所有手术均在最高标准的无菌手术室中进行，由经验丰富的麻醉团队全程监护，安全是我们绝不妥协的底线。" data-lang-en="We implement a strict client confidentiality system and appointment management to ensure your absolute privacy during your visit. All surgeries are performed in sterile operating rooms of the highest standard, monitored throughout by an experienced anesthesia team. Safety is our uncompromisable bottom line.">我们实行严格的客户信息保密制度...</p></div></div></div>
+            </div>
+        </section>
+
+        <section id="contact" class="content-section cta-section">
+            <h2 class="section-title" data-lang-zh="开启您的美丽旅程" data-lang-en="Begin Your Beauty Journey">开启您的美丽旅程</h2>
+            <p class="section-subtitle" style="max-width: 600px; margin-top: -1rem; margin-bottom: 2.5rem;" data-lang-zh="我们相信，每一次咨询都是一次深入的艺术探讨。<br>点击下方按钮，与我们的美学顾问预约一次一对一的深度沟通。" data-lang-en="We believe every consultation is a deep artistic discussion.<br>Click the button below to schedule a one-on-one in-depth conversation with our aesthetic consultant.">我们相信，每一次咨询都是一次深入的艺术探讨...</p>
+            <button class="cta-button" id="open-modal-btn" data-lang-zh="立即预约私人咨询" data-lang-en="Book a Private Consultation Now">立即预约私人咨询</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4 data-lang-zh="关于 Pretty Manor" data-lang-en="About Pretty Manor">关于 Pretty Manor</h4>
+                <p data-lang-zh="我们是一家融合顶尖医疗科技与艺术美学的精品诊所，致力于为每一位客户提供个性化、安全、高效的变美方案。" data-lang-en="We are a boutique clinic that blends top medical technology with artistic aesthetics, dedicated to providing personalized, safe, and effective beauty solutions for every client.">我们是一家融合顶尖医疗科技...</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-lang-zh="快速链接" data-lang-en="Quick Links">快速链接</h4>
+                <a href="#services" data-lang-zh="核心项目" data-lang-en="Core Services">核心项目</a>
+                <a href="#artisans" data-lang-zh="匠人团队" data-lang-en="Our Artisans">匠人团队</a>
+                <a href="#faq" data-lang-zh="常见问答" data-lang-en="FAQ">常见问答</a>
+                <a href="#" data-lang-zh="隐私政策" data-lang-en="Privacy Policy">隐私政策</a>
+            </div>
+            <div class="footer-col">
+                <h4 data-lang-zh="联系我们" data-lang-en="Contact Us">联系我们</h4>
+                <p data-lang-zh="# 188, street 245 Mao Setong" data-lang-en="Address: [Virtual Address] No. 245">地址：[虚拟地址] 123号</p>
+                <p data-lang-zh="电话 015650001" data-lang-en="Phone: 015650001 ">电话：015650001</p>
+                <p>Email: jiatingting219@gmail.com</p>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06c0 5.52 4.5 10.02 10 10.02 5.5 0 10-4.5 10-10.02C22 6.53 17.5 2.04 12 2.04zM16.5 12.62h-2.1v6.5h-3v-6.5H10v-2.5h1.4v-1.7c0-1.4 1.1-2.5 2.5-2.5h1.6v2.5h-1.6c-.2 0-.4.2-.4.4v1.3h2.1l-.3 2.5z"/></svg></a>
+                    <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.22-2.42.46-.65.25-1.23.59-1.77 1.14-.55.55-.89 1.12-1.14 1.77-.24.63-.41 1.36-.46 2.42C2.01 8.95 2 9.28 2 12s.01 3.05.06 4.12c.05 1.06.22 1.79.46 2.42.25.65.59 1.23 1.14 1.77.55.55 1.12.89 1.77 1.14.63.24 1.36.41 2.42.46 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.22 2.42-.46.65-.25 1.23-.59 1.77-1.14.55-.55.89-1.12 1.14-1.77.24-.63.41-1.36.46-2.42.05-1.07.06-1.4.06-4s-.01-3.05-.06-4c-.05-1.02-.21-1.5-.33-1.8.15-.4.34-.7.63.98.28.28.58-.48.98.63.3-.12.78-.28 1.8-.33 1.05-.05 1.35-.06 4-.06zM12 7.25c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.75 12 16.75 16.75 14.62 16.75 12 14.62 7.25 12 7.25zm0 7.7c-1.6 0-2.9-1.3-2.9-2.9s1.3-2.9 2.9-2.9 2.9 1.3 2.9 2.9-1.3 2.9-2.9 2.9zm4.65-6.6c-.5 0-.9.4-.9.9s.4.9.9.9.9-.4.9-.9-.4-.9-.9-.9z"/></svg></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" data-lang-zh="&copy; 2025 Pretty Manor Aesthetics. 版权所有。" data-lang-en="&copy; 2025 Pretty Manor Aesthetics. All Rights Reserved.">&copy; 2025 Pretty Manor Aesthetics. All Rights Reserved.</div>
+    </footer>
+
+    <div class="modal-overlay" id="contact-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-modal-btn">&times;</button>
+            <h3 data-lang-zh="联系美学顾问" data-lang-en="Contact Our Consultant">联系美学顾问</h3>
+            <div class="qr-code">
+                <img src="截屏2025-07-02 下午3.50.46.png" alt="微信客服二维码">
+            </div>
+            <p style="color: var(--color-secondary); margin-bottom: 1rem;" data-lang-zh="扫描二维码添加微信客服" data-lang-en="Scan QR code to add us on WeChat">扫描二维码添加微信客服</p>
+            <a href="https://www.facebook.com/profile.php?id=61567153041028" target="_blank" class="social-link" data-lang-zh="通过 Facebook 联系我们" data-lang-en="Contact Us via Facebook">通过 Facebook 联系我们</a>
+        </div>
+    </div>
+
+    <button id="scroll-to-top" title="返回顶部">&#8679;</button>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- 1. 语言切换核心逻辑 ---
+        const setupLanguageSwitcher = () => {
+            const langToggles = document.querySelectorAll('.language-switcher');
+            const translatableElements = document.querySelectorAll('[data-lang-zh]');
+
+            const setLanguage = (lang) => {
+                translatableElements.forEach(el => {
+                    const text = el.dataset[lang === 'en' ? 'langEn' : 'langZh'];
+                    if (text !== undefined) {
+                        el.innerHTML = text; // 使用innerHTML以支持<br>等标签
+                    }
+                });
+                document.documentElement.lang = lang;
+                localStorage.setItem('preferredLanguage', lang);
+            };
+
+            const toggleLanguage = () => {
+                const currentLang = localStorage.getItem('preferredLanguage') || 'zh-CN';
+                const newLang = currentLang === 'zh-CN' ? 'en' : 'zh-CN';
+                setLanguage(newLang);
+            };
+
+            langToggles.forEach(btn => btn.addEventListener('click', toggleLanguage));
+
+            const preferredLang = localStorage.getItem('preferredLanguage') || 'zh-CN';
+            setLanguage(preferredLang);
+        };
+
+        // --- 2. 修复并整合后的视频播放器逻辑 ---
+        const setupVideoPlayer = () => {
+            const videoContainer = document.querySelector('.video-container');
+            if (!videoContainer) return;
+
+            const videoSlides = videoContainer.querySelectorAll('.video-slide');
+            const indicators = videoContainer.querySelectorAll('.indicator');
+            const prevBtn = document.getElementById('video-prev-btn');
+            const nextBtn = document.getElementById('video-next-btn');
+            let currentIndex = 0;
+            let autoPlayInterval;
+
+            const showVideo = (index) => {
+                // 确保索引在有效范围内
+                currentIndex = (index + videoSlides.length) % videoSlides.length;
+
+                videoSlides.forEach((slide, i) => {
+                    const video = slide.querySelector('video');
+                    slide.classList.remove('active');
+                    indicators[i].classList.remove('active');
+                    if (video) video.pause();
+                });
+
+                const currentSlide = videoSlides[currentIndex];
+                const currentIndicator = indicators[currentIndex];
+                currentSlide.classList.add('active');
+                currentIndicator.classList.add('active');
+                
+                const activeVideo = currentSlide.querySelector('video');
+                if (activeVideo) {
+                    activeVideo.currentTime = 0;
+                    activeVideo.play().catch(() => {}); // 静默处理播放失败
+                }
+            };
+
+            const startAutoPlay = () => {
+                stopAutoPlay(); // 先清除，防止重复
+                autoPlayInterval = setInterval(() => {
+                    showVideo(currentIndex + 1);
+                }, 6000);
+            };
+
+            const stopAutoPlay = () => {
+                clearInterval(autoPlayInterval);
+            };
+
+            if (nextBtn) nextBtn.addEventListener('click', () => showVideo(currentIndex + 1));
+            if (prevBtn) prevBtn.addEventListener('click', () => showVideo(currentIndex - 1));
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => showVideo(index));
+            });
+
+            videoContainer.addEventListener('mouseenter', stopAutoPlay);
+            videoContainer.addEventListener('mouseleave', startAutoPlay);
+
+            // 初始化
+            if (videoSlides.length > 0) {
+                showVideo(0);
+                startAutoPlay();
+            }
+        };
+
+        // --- 3. 您原有的其他JS逻辑 (保持不变) ---
+        const setupOtherInteractions = () => {
+            const navbar = document.querySelector('.navbar');
+            const sections = document.querySelectorAll('.content-section, .hero');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            const scrollToTopBtn = document.getElementById('scroll-to-top');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const navContainer = document.getElementById('nav-container');
+
+            if (hamburgerMenu && navContainer) {
+                hamburgerMenu.addEventListener('click', () => {
+                    hamburgerMenu.classList.toggle('active');
+                    navContainer.classList.toggle('active');
+                    document.body.classList.toggle('nav-open');
+                });
+            }
+
+            document.querySelectorAll('#nav-container a, #lang-toggle-btn-mobile').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (document.body.classList.contains('nav-open')) {
+                        hamburgerMenu.classList.remove('active');
+                        navContainer.classList.remove('active');
+                        document.body.classList.remove('nav-open');
+                    }
+                });
+            });
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    if (navbar) navbar.classList.add('scrolled');
+                    if (scrollToTopBtn) scrollToTopBtn.classList.add('visible');
+                } else {
+                    if (navbar) navbar.classList.remove('scrolled');
+                    if (scrollToTopBtn) scrollToTopBtn.classList.remove('visible');
+                }
+            });
+
+            if (scrollToTopBtn) {
+                scrollToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            const observerOptions = { rootMargin: '-40% 0px -40% 0px' };
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        const id = entry.target.getAttribute('id');
+                        const navLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+                        if (navLink) {
+                            navLinks.forEach(link => link.classList.remove('active'));
+                            navLink.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => { if (section) sectionObserver.observe(section); });
+
+            document.querySelectorAll('.artisan-card').forEach(card => {
+                card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+            });
+
+            const slidesContainer = document.querySelector('.testimonial-slides');
+            if (slidesContainer) {
+                const slides = slidesContainer.children;
+                const prevBtn = document.getElementById('prev-slide');
+                const nextBtn = document.getElementById('next-slide');
+                if (slides.length > 0 && prevBtn && nextBtn) {
+                    let currentIndex = 0;
+                    const totalSlides = slides.length;
+                    const updateSlidePosition = () => { slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`; };
+                    nextBtn.addEventListener('click', () => { currentIndex = (currentIndex + 1) % totalSlides; updateSlidePosition(); });
+                    prevBtn.addEventListener('click', () => { currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; updateSlidePosition(); });
+                }
+            }
+
+            document.querySelectorAll('.faq-question').forEach(button => {
+                button.addEventListener('click', () => {
+                    const answerWrapper = button.nextElementSibling;
+                    button.classList.toggle('active');
+                    if (button.classList.contains('active')) {
+                        answerWrapper.style.maxHeight = answerWrapper.scrollHeight + 'px';
+                    } else {
+                        answerWrapper.style.maxHeight = '0';
+                    }
+                });
+            });
+
+            const modalOverlay = document.getElementById('contact-modal');
+            const openModalBtns = document.querySelectorAll('.hero-button, #open-modal-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const openModal = (e) => { e.preventDefault(); if (modalOverlay) { modalOverlay.classList.add('active'); document.body.classList.add('modal-open'); } };
+            const closeModal = () => { if (modalOverlay) { modalOverlay.classList.remove('active'); document.body.classList.remove('modal-open'); } };
+            openModalBtns.forEach(btn => btn.addEventListener('click', openModal));
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if (modalOverlay) modalOverlay.addEventListener('click', (event) => { if (event.target === modalOverlay) closeModal(); });
+        };
+
+        // --- 初始化所有功能 ---
+        setupLanguageSwitcher();
+        setupVideoPlayer();
+        setupOtherInteractions();
+    });
+    </script>
+</body>
+</html>
